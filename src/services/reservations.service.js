@@ -4,14 +4,14 @@ let nextId = 1;
 /**
  * Palauttaa kaikki tietyn huoneen varaukset
  */
-function getReservationsByRoom(roomId) {
+export function getReservationsByRoom(roomId) {
     return reservations.filter(r => r.roomId === roomId);
 }
 
 /**
  * Luo uuden varauksen
  */
-function createReservation({ roomId, username, startTime, endTime }) {
+export function createReservation({ roomId, username, startTime, endTime }) {
     const start = new Date(startTime);
     const end = new Date(endTime);
     const now = new Date();
@@ -55,7 +55,7 @@ function createReservation({ roomId, username, startTime, endTime }) {
 /**
  * Poistaa varauksen id:n perusteella
  */
-function deleteReservation(id) {
+export function deleteReservation(id) {
     const index = reservations.findIndex(r => r.id === id);
     if (index === -1) {
         return false;
@@ -64,9 +64,3 @@ function deleteReservation(id) {
     reservations.splice(index, 1);
     return true;
 }
-
-module.exports = {
-    getReservationsByRoom,
-    createReservation,
-    deleteReservation
-};

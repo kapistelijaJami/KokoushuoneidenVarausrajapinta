@@ -1,6 +1,5 @@
-const express = require("express");
-
-const reservationsRoutes = require("./routes/reservations.routes");
+import express from "express";
+import reservationsRoutes from "./routes/reservations.routes.js";
 
 const app = express();
 
@@ -15,4 +14,4 @@ app.get("/health", (req, res) => {
     res.json({ status: "ok" });
 });
 
-module.exports = app;
+export default app;

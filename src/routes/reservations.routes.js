@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import * as reservationService from "../services/reservations.service.js";
 
-const reservationService = require("../services/reservations.service");
+const router = express.Router();
 
 // Luo varaus
 router.post("/rooms/:roomId/reservations", (req, res) => {
@@ -44,4 +44,4 @@ router.get("/rooms/:roomId/reservations", (req, res) => {
     res.json(reservations);
 });
 
-module.exports = router;
+export default router;
