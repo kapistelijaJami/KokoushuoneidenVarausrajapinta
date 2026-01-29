@@ -1,0 +1,18 @@
+meeting-room-api/
+├─ package.json
+├─ package-lock.json
+├─ README.md
+├─ src/
+│  ├─ app.js
+│  ├─ server.js
+│  │
+│  ├─ routes/
+│  │  └─ reservations.routes.js
+│  │
+│  ├─ controllers/
+│  │  └─ reservations.controller.js
+│  │
+│  └─ services/
+│     └─ reservations.service.js
+│
+└─ .gitignore
