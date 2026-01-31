@@ -12,14 +12,18 @@ router.post("/rooms/:roomId/reservations", (req, res) => {
         return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const reservation = reservationService.createReservation({
-        roomId,
-        username,
-        startTime,
-        endTime
-    });
+    try {
+        const reservation = reservationService.createReservation({
+            roomId,
+            username,
+            startTime,
+            endTime
+        });
 
-    res.status(201).json(reservation);
+        res.status(201).json(reservation);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 // Peruuta varaus
