@@ -12,7 +12,10 @@ meeting-room-api/
 │  ├─ controllers/
 │  │  └─ reservations.controller.js
 │  │
-│  └─ services/
-│     └─ reservations.service.js
+│  │─ services/
+│  │  └─ reservations.service.js
+│  │
+│  └─ constants/
+│     └─ constants.js
 │
 └─ .gitignore
