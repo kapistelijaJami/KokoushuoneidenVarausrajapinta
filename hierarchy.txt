@@ -15,6 +15,9 @@ meeting-room-api/
 │  │─ services/
 │  │  └─ reservations.service.js
 │  │
+│  │─ util/
+│  │  └─ reservations.util.js
+│  │
 │  └─ constants/
 │     └─ constants.js
 │
