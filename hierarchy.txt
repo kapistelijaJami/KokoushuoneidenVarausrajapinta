@@ -18,4 +18,7 @@ meeting-room-api/
 │  └─ constants/
 │     └─ constants.js
 │
+├─ test/
+│  └─ reservations.service.test.js
+│
 └─ .gitignore

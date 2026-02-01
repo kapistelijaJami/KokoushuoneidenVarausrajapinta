@@ -68,6 +68,7 @@ Jos haluat, voin:
 
 ---
 
+
 ## Oma kommentti:
 Kerron alkuun millä kielellä ja mitä kirjastoja käyttäen haluan tehdä projektin, että seuraavat vastaukset vastaa omaa tilannetta mahdollisimman tarkasti. Aloitan kysymällä projektin rakennetta. Tämä on kokemukseni perusteella hyvä tapa saada AI jakamaan myöhemmin luotava koodi pienempiin osiin, jotta koodin luettavuus pysyisi hyvänä. Pyysin myös sitä luomaan hierarkisen puun projektin rakenteesta. Tämä on ollut erittäin kätevä prompti omissa projekteissani. Se auttaa projektin suunnittelua huomattavasti, varsinkin jos projekti on hieman monimutkaisempi kuin tämän tehtävän projekti.
 
@@ -227,6 +228,7 @@ Sano vaan, mihin mennään seuraavaksi 🚀
 
 ---
 
+
 ## Oma kommentti:
 Vaikka en suunnitellut lisääväni tehtävään huoneiden listausta ja lisäämistä jne, halusin kuitenkin listan esimerkkihuoneista, joita voisi tulevaisuudessa hyödyntää. Tämä myös varmistaa, että AI:lla on käsitys minkälaisista huoneista on kyse, ja mitä tiedostotyyppejä nämä objektit saattaa pitää sisällään. Tässä heti huomasi, että esimerkiksi huoneen id:ksi AI laittoi stringin, vaikka itse menisin mieluummin vain numerolla. Se tekee esim url patheistä siistimpiä ja seuraa tarkemmin REST-API konventioita. Myös, jos data olisi tietokannassa, niin siellä id on todennäköisesti vain numero. Eli vaikka tämä tehtävä onkin vain palvelimen muistissa, niin on parempi vain suoraan vaihtaa id:t numeroksi tässäkin.
 
@@ -288,6 +290,7 @@ Jatketaanko 👌
 
 ---
 
+
 # PROMPTI:
 Vaihdetaan id olemaan pelkkä numero tekstin sijaan. Muuten pidä huoneet samanlaisina.
 
@@ -344,6 +347,7 @@ Sano vain 👍
 
 ---
 
+
 ## Oma kommentti:
 Kysyin seuraavaksi varauksille esimerkkivarauksen. Tämä määrittää mitä dataa ne pitää sisällään, ja minkä nimiset muuttujat siellä on sisällä, jotta myöhemmin luotava koodi suoraan käyttää samoja nimiä.
 
@@ -365,6 +369,7 @@ Tässä **yksinkertainen varausten tietomalli**, sopiva in-memory-käyttöön:
 Minimi, selkeä ja helppo validoida.
 
 ---
+
 
 ## Oma kommentti:
 Halusin varausten pitävän kirjaa kuka sen on luonut, vaikka en tehtävää varten teekään itse käyttäjiä.
@@ -388,6 +393,7 @@ Tässä päivitetty **varausten tietomalli**, lisättynä varaajan käyttäjäni
 Yksinkertainen, mutta riittävän realistinen tähän tehtävään.
 
 ---
+
 
 ## Oma kommentti:
 Nyt ollaan siis selvitetty minkälainen rakenne projektilla tulee olemaan, niin voidaan luoda koodia. Pyysin vain päätiedostot ensin ettei vastauksista tule liian pitkiä, ja tässä pystyy samalla lukemaan miten koodi toimii, ja tarkistamaan, että se näyttää järkevältä.
@@ -502,6 +508,7 @@ Seuraava luonteva askel olisi:
 Sano vaan, mihin haluat tarttua seuraavaksi 🚀
 
 ---
+
 
 ## Oma kommentti:
 Seuraavaksi tehdään itse varauslogiikka. Se sisältää vain varausten listaamisen, luomisen ja poistamisen. Aikaisemman vastauksen router ei vielä käyttänyt tätä tiedostoa, joten sekin pitää päivittää heti perään.
@@ -642,6 +649,7 @@ Jatketaanko niihin vai haluatko ensin store-tiedoston erikseen? 🚀
 
 ---
 
+
 ## Oma kommentti:
 Testasin generoitua koodia Postmanilla, ja oli nopeampi vain kysyä raakaa esimerkkidataa AI:lta jonka pystyi vain kopioimaan postmaniin.
 
@@ -665,6 +673,7 @@ Tässä **esimerkk JSON body**, jonka voit lähettää Postmanilla `POST`-metodi
 Tämä osuu suoraan nykyiseen routeen ja menee läpi ilman lisämuutoksia 👍
 
 ---
+
 
 ## Oma kommentti:
 Nyt kun koodin perustoiminnallisuus on testattu, se tarvitsee inputin validoinnin. Annoin AI:lle tarvittavat tarkistukset, ja kysyin että palauttaisi vain muokattu funktio, eikä koko tiedoston koodia.
@@ -723,3 +732,366 @@ function createReservation({ roomId, username, startTime, endTime }) {
 ```
 
 ---
+
+
+## Oma kommentti:
+Tässä vaiheessa perustoiminnallisuus on valmis, ja aloin itse tekemään parannuksia koodiin. Halusin tehdä myös muutamia testejä, ja päätin käyttää niihin apuna AI:ta.
+
+# PROMPTI:
+Seuraavaksi voisi tehdä muutaman testin. Tee koodi varauksen luomisen testaukselle. Käytän node:test kirjastoa.
+
+# VASTAUS:
+Hyvä seuraava askel 👌 Alla on **yksinkertaiset mutta oleelliset testit varauksen luomiselle** käyttäen `node:test` + `assert`. Nämä testaavat juuri ne säännöt, jotka lisäsit.
+
+Oletus:
+
+* testit ajetaan Node 18+
+* service on `src/services/reservations.service.js`
+
+---
+
+## `test/reservations.service.test.js`
+
+```js
+const test = require("node:test");
+const assert = require("node:assert/strict");
+
+const reservationService = require("../src/services/reservations.service");
+
+function futureDate(minutesFromNow) {
+  return new Date(Date.now() + minutesFromNow * 60 * 1000).toISOString();
+}
+
+test("creates a valid reservation", () => {
+  const reservation = reservationService.createReservation({
+    roomId: 1,
+    username: "test.user",
+    startTime: futureDate(60),
+    endTime: futureDate(120)
+  });
+
+  assert.equal(reservation.roomId, 1);
+  assert.equal(reservation.username, "test.user");
+  assert.ok(reservation.id);
+});
+
+test("fails if start time is after end time", () => {
+  assert.throws(() => {
+    reservationService.createReservation({
+      roomId: 1,
+      username: "test.user",
+      startTime: futureDate(120),
+      endTime: futureDate(60)
+    });
+  });
+});
+
+test("fails if reservation is in the past", () => {
+  const past = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+
+  assert.throws(() => {
+    reservationService.createReservation({
+      roomId: 1,
+      username: "test.user",
+      startTime: past,
+      endTime: futureDate(60)
+    });
+  });
+});
+
+test("fails if reservation overlaps with existing one", () => {
+  const start1 = futureDate(180);
+  const end1 = futureDate(240);
+
+  reservationService.createReservation({
+    roomId: 2,
+    username: "first.user",
+    startTime: start1,
+    endTime: end1
+  });
+
+  assert.throws(() => {
+    reservationService.createReservation({
+      roomId: 2,
+      username: "second.user",
+      startTime: futureDate(210),
+      endTime: futureDate(270)
+    });
+  });
+});
+
+test("allows overlapping times in different rooms", () => {
+  assert.doesNotThrow(() => {
+    reservationService.createReservation({
+      roomId: 99,
+      username: "other.room",
+      startTime: futureDate(210),
+      endTime: futureDate(270)
+    });
+  });
+});
+```
+
+---
+
+## Testien ajo
+
+Lisää `package.json`iin:
+
+```json
+{
+  "scripts": {
+    "test": "node --test"
+  }
+}
+```
+
+Ja aja:
+
+```bash
+npm test
+```
+
+---
+
+### Pieni mutta tärkeä huomio (ammattimainen)
+
+Koska käytät **in-memory dataa**, testit jakavat saman tilan.
+Seuraava parannus olisi:
+
+* `reset()`-funktio serviceen **tai**
+* siirtää `reservations` omaan store-tiedostoon, jonka voi nollata testeissä
+
+Halutessasi voin:
+
+* tehdä `resetReservations()`-helperin
+* tai refaktoroida servicen testattavammaksi (ilman että tehtävä monimutkaistuu)
+
+Hyvää tekemistä – tämä projekti on jo tosi siisti 💪
+
+
+---
+
+
+## Oma kommentti:
+Tässä vaiheessa muistin että vaihdoin projektin CommonJS:stä käyttämään modernimpaa ES Moduuleita, niin kerroin tästä AI:lle myös, ja kerroin, että reset-funktio löytyy nyt myös jota voi käyttää aina testien alussa, ettei tarvitse tehdä esim. aloitus- ja lopetusajoista monimutkaisia kun ne ei saa mennä päällekäin. Ilman tätä korjausta testien järjestyksen vaihtaminen ja uusien lisääminen saattaa hajottaa aikaisempia testejä.
+
+# PROMPTI:
+Vaidoin muuten projektin käyttämään ES moduuleita commonJS:n sijaan. Korjasin importit kuitenkin itse. Laitoin nyt myös reset funktion serviceen, niin nyt voidaan resettaa muisti ennen jokaista testiä. Pävitä testit käyttämään sitä.
+
+# VASTAUS:
+Jes, hyvä refaktorointi 👍 ES-moduulit + reset tekee testauksesta heti paljon siistimpää.
+
+Alla **päivitetyt testit**, jotka:
+
+* käyttävät ES module -syntaksia
+* kutsuvat `reset()`-funktiota ennen jokaista testiä
+* hyödyntävät `beforeEach` `node:test`-kirjastosta
+
+---
+
+## `test/reservations.service.test.js`
+
+```js
+import test, { beforeEach } from "node:test";
+import assert from "node:assert/strict";
+
+import {
+  createReservation,
+  reset
+} from "../src/services/reservations.service.js";
+
+function futureDate(minutesFromNow) {
+  return new Date(Date.now() + minutesFromNow * 60 * 1000).toISOString();
+}
+
+beforeEach(() => {
+  reset();
+});
+
+test("creates a valid reservation", () => {
+  const reservation = createReservation({
+    roomId: 1,
+    username: "test.user",
+    startTime: futureDate(60),
+    endTime: futureDate(120)
+  });
+
+  assert.equal(reservation.roomId, 1);
+  assert.equal(reservation.username, "test.user");
+  assert.ok(reservation.id);
+});
+
+test("fails if start time is after end time", () => {
+  assert.throws(() => {
+    createReservation({
+      roomId: 1,
+      username: "test.user",
+      startTime: futureDate(120),
+      endTime: futureDate(60)
+    });
+  });
+});
+
+test("fails if reservation is in the past", () => {
+  const past = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+
+  assert.throws(() => {
+    createReservation({
+      roomId: 1,
+      username: "test.user",
+      startTime: past,
+      endTime: futureDate(60)
+    });
+  });
+});
+
+test("fails if reservation overlaps with existing one in same room", () => {
+  createReservation({
+    roomId: 2,
+    username: "first.user",
+    startTime: futureDate(180),
+    endTime: futureDate(240)
+  });
+
+  assert.throws(() => {
+    createReservation({
+      roomId: 2,
+      username: "second.user",
+      startTime: futureDate(210),
+      endTime: futureDate(270)
+    });
+  });
+});
+
+test("allows overlapping times in different rooms", () => {
+  createReservation({
+    roomId: 2,
+    username: "first.user",
+    startTime: futureDate(180),
+    endTime: futureDate(240)
+  });
+
+  assert.doesNotThrow(() => {
+    createReservation({
+      roomId: 3,
+      username: "other.room",
+      startTime: futureDate(210),
+      endTime: futureDate(270)
+    });
+  });
+});
+```
+
+---
+
+### Tämä on nyt **oikeasti hyvää tasoa**
+
+* deterministiset testit
+* ei tilavuotoa testien välillä
+* moderni Node-tyyli (ESM + node:test)
+
+Seuraava luonnollinen jatko olisi:
+
+* testit **deleteReservation**-funktiolle
+* tai HTTP-tason testit (supertestillä)
+* tai virheviestien tarkempi tarkistus (`assert.throws(err => err.message === ...)`)
+
+
+---
+
+
+# PROMPTI:
+Testit toimii, lisäsin muutaman oman testin myös. Viittaa tulevaisuudessa servicen funktioihin reservationService.funktionNimi(). Tee muutama testi varauksen poistamiselle.
+
+# VASTAUS:
+Mahtavaa 💪 Ja hyvä linjaus tuosta nimestämisestä – se tekee testeistä heti luettavampia.
+
+Alla **muutama selkeä testi varauksen poistamiselle**, käyttäen
+`reservationService.funktionNimi()`-tyyliä ja samaa reset-käytäntöä.
+
+---
+
+## Lisättävät testit: varauksen poisto
+
+```js
+import test, { beforeEach } from "node:test";
+import assert from "node:assert/strict";
+
+import * as reservationService from "../src/services/reservations.service.js";
+
+function futureDate(minutesFromNow) {
+  return new Date(Date.now() + minutesFromNow * 60 * 1000).toISOString();
+}
+
+beforeEach(() => {
+  reservationService.reset();
+});
+
+test("deletes an existing reservation", () => {
+  const reservation = reservationService.createReservation({
+    roomId: 1,
+    username: "delete.user",
+    startTime: futureDate(60),
+    endTime: futureDate(120)
+  });
+
+  const result = reservationService.deleteReservation(reservation.id);
+
+  assert.equal(result, true);
+
+  const reservations =
+    reservationService.getReservationsByRoom(1);
+
+  assert.equal(reservations.length, 0);
+});
+
+test("returns false when trying to delete non-existing reservation", () => {
+  const result = reservationService.deleteReservation(999);
+
+  assert.equal(result, false);
+});
+
+test("deleting one reservation does not affect others", () => {
+  const r1 = reservationService.createReservation({
+    roomId: 1,
+    username: "user.one",
+    startTime: futureDate(60),
+    endTime: futureDate(120)
+  });
+
+  const r2 = reservationService.createReservation({
+    roomId: 1,
+    username: "user.two",
+    startTime: futureDate(180),
+    endTime: futureDate(240)
+  });
+
+  reservationService.deleteReservation(r1.id);
+
+  const reservations =
+    reservationService.getReservationsByRoom(1);
+
+  assert.equal(reservations.length, 1);
+  assert.equal(reservations[0].id, r2.id);
+});
+```
+
+---
+
+### Miksi nämä testit ovat hyviä
+
+* testaa **onnistuneen poiston**
+* testaa **virhetilanteen** (id ei löydy)
+* varmistaa ettei poisto riko muuta dataa
+
+Tässä vaiheessa sun projekti on jo:
+✅ rakenteellisesti siisti
+✅ testattu
+✅ helposti laajennettavissa
+
+Seuraava “viimeistelytaso” voisi olla:
+
+* HTTP-tason delete-testit
+* virheviestien yhdenmukaistaminen
+* tai README + API-dokumentaatio
