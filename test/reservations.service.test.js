@@ -120,3 +120,51 @@ describe("testing reservation creation", () => {
         });
     });
 });
+
+describe("testing reservation deletion", () => {
+    test("deletes an existing reservation", () => {
+        const reservation = reservationService.createReservation({
+            roomId: 1,
+            username: "delete.user",
+            startTime: futureDate(60),
+            endTime: futureDate(120)
+        });
+
+        const result = reservationService.deleteReservation(reservation.id);
+
+        assert.equal(result, true);
+
+        const reservations = reservationService.getReservationsByRoom(1);
+
+        assert.equal(reservations.length, 0);
+    });
+
+    test("returns false when trying to delete non-existing reservation", () => {
+        const result = reservationService.deleteReservation(999);
+
+        assert.equal(result, false);
+    });
+
+    test("deleting one reservation does not affect others", () => {
+        const r1 = reservationService.createReservation({
+            roomId: 1,
+            username: "user.one",
+            startTime: futureDate(60),
+            endTime: futureDate(120)
+        });
+
+        const r2 = reservationService.createReservation({
+            roomId: 1,
+            username: "user.two",
+            startTime: futureDate(180),
+            endTime: futureDate(240)
+        });
+
+        reservationService.deleteReservation(r1.id);
+
+        const reservations = reservationService.getReservationsByRoom(1);
+
+        assert.equal(reservations.length, 1);
+        assert.equal(reservations[0].id, r2.id);
+    });
+});
