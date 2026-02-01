@@ -1,4 +1,5 @@
 import { MAX_START_TIME_IN_PAST_MIN } from "../constants/constants.js"
+import * as reservationUtil from "../util/reservations.util.js";
 
 let reservations = [];
 let nextId = 1;
@@ -40,16 +41,7 @@ export const createReservation = ({ roomId, username, startTime, endTime }) => {
     }
 
     // Päällekkäisyystarkistus
-    const overlapping = reservations.some(r => {
-        if (r.roomId !== roomId) return false;
-
-        const existingStart = new Date(r.startTime);
-        const existingEnd = new Date(r.endTime);
-
-        return start < existingEnd && end > existingStart;
-    });
-
-    if (overlapping) {
+    if (reservationUtil.hasOverlappingReservations(start, end, roomId, reservations)) {
         throw new Error("Reservation overlaps with an existing reservation");
     }
 

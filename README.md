@@ -1,6 +1,6 @@
 # Kokoushuoneiden Varausrajapinta (API)
 
-Kokoushuoneiden varausrajapinta on yksinkertainen Node.js + Express -pohjainen REST API kokoushuoneiden varaamiselle. Sillä voi varata huoneita, sekä peruuttaa ja listata varauksia. Data säilytetään palvelimen muistissa, eikä erillistä tietokantaa käytetä. Se tarkistaa käyttäjän syötteet ja esimerkiksi varmistaa että varaukset eivät voi mennä päällekkäin tai sijoittua menneisyyteen.
+Kokoushuoneiden varausrajapinta on yksinkertainen Node.js + Express -pohjainen REST API kokoushuoneiden varaamiselle. Sillä voi varata huoneita, sekä peruuttaa ja listata varauksia. Data säilytetään palvelimen muistissa, eikä erillistä tietokantaa käytetä. Se tarkistaa käyttäjän syötteet ja esimerkiksi varmistaa että varaukset eivät voi mennä päällekkäin tai sijoittua menneisyyteen. Projekti on pilkottu hyvien käytänteiden mukaisesti moduuleihin, jotta sen laajentaminen ja ylläpito on vaivatonta.
 
 ## Ominaisuudet
 - Huoneen varaaminen
