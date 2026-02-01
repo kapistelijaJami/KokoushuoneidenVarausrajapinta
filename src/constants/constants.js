@@ -1,0 +1,1 @@
+export const MAX_START_TIME_IN_PAST_MIN = 5; //5 min

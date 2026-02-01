@@ -1,3 +1,5 @@
+import { MAX_START_TIME_IN_PAST_MIN } from "../constants/constants.js"
+
 let reservations = [];
 let nextId = 1;
 
@@ -12,7 +14,7 @@ export const getReservationsByRoom = (roomId) => {
  * Luo uuden varauksen
  */
 export const createReservation = ({ roomId, username, startTime, endTime }) => {
-    const start = new Date(startTime);
+    let start = new Date(startTime);
     const end = new Date(endTime);
     const now = new Date();
 
@@ -23,7 +25,18 @@ export const createReservation = ({ roomId, username, startTime, endTime }) => {
 
     // Ei menneisyyteen
     if (start < now) {
-        throw new Error("Reservation cannot be in the past");
+        // Varauksen alku- ja loppuaika ovat menneisyydessä
+        if (end <= now) {
+            throw new Error("Reservation cannot be in the past");
+        }
+
+        // Jos aloitusaika on vain vähän menneisyydessä (max 5min), mutta lopetusaika on vielä voimassa,
+        // voidaan silti luoda varaus. Aloitetaan varaus kuitenkin vain tästä hetkestä.
+        if (now.getTime() - start.getTime() > MAX_START_TIME_IN_PAST_MIN * 60 * 1000) {
+            throw new Error(`Start time cannot be in the past by more than ${MAX_START_TIME_IN_PAST_MIN} minutes`);
+        }
+
+        start = now;
     }
 
     // Päällekkäisyystarkistus
@@ -44,8 +57,8 @@ export const createReservation = ({ roomId, username, startTime, endTime }) => {
         id: nextId++,
         roomId,
         username,
-        startTime,
-        endTime
+        startTime: start.toISOString(),
+        endTime: end.toISOString()
     };
 
     reservations.push(reservation);

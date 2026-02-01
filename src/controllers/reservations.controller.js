@@ -22,6 +22,14 @@ export const createReservation = (req, res) => {
     }
 }
 
+export const getReservationsByRoom = (req, res) => {
+    const roomId = Number(req.params.roomId);
+
+    const reservations = reservationService.getReservationsByRoom(roomId);
+
+    res.json(reservations);
+}
+
 export const deleteReservation = (req, res) => {
     const id = Number(req.params.id);
 
@@ -31,12 +39,4 @@ export const deleteReservation = (req, res) => {
     }
 
     res.status(204).send();
-}
-
-export const getReservationsByRoom = (req, res) => {
-    const roomId = Number(req.params.roomId);
-
-    const reservations = reservationService.getReservationsByRoom(roomId);
-
-    res.json(reservations);
 }
