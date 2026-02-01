@@ -77,3 +77,12 @@ export const deleteReservation = (id) => {
     reservations.splice(index, 1);
     return true;
 }
+
+/**
+ * Tyhjentää varauksien muistin ja aloittaa id:n laskemisen alusta.
+ * Käytetään esim. testauksessa.
+ */
+export const reset = () => {
+    reservations = [];
+    nextId = 1;
+}
